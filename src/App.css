@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.top-icon{
+  color: rgba(75, 75, 75, 0.9);
+}
