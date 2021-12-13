@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-/*
 import { json, checkStatus } from './utils';
-*/
+
 
 import './Input.css';
 
@@ -10,6 +9,7 @@ class CurrencyConverter extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
+        startValue: 1.00,
         rate: 0.89,
         base: "USD",
         target: '',
@@ -54,7 +54,7 @@ class CurrencyConverter extends React.Component {
     }
   
     render() {
-      const { rate, usd, euro } = this.state;
+      const { rate, usd, euro, startValue } = this.state;
   
       return (
         <div className="container">
@@ -73,13 +73,15 @@ class CurrencyConverter extends React.Component {
           </div>
 
           {/* the currency exchange app row */}
-          <div className="row no-gutters">
+          <div className="row">
             <div className="col-5">
-                <span className="mr-1">USD</span>
-                <input value={usd} className="form-control input-currency" type="number" />
+              <span className="mr-1">Amount</span>
+              <input value={startValue} className="form-control input-currency" type="number" />
             </div>
-            <div className="col-3">
-              <span className="mr-1">Base Currency</span>
+
+
+              <div className="col-3">
+                <span className="mr-1">Base Currency</span>
                 <div className="base-dropdown">
                     <button className="btn bg-transparent border-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Dropdown button
@@ -90,32 +92,33 @@ class CurrencyConverter extends React.Component {
                         <a className="dropdown-item" href="#">Something else here</a>
                     </div>
                 </div>
-            </div>
-            <div className="col-1 text-center">
-              <span className="mr-1 d-block">&nbsp;</span>
-              <button type="button" className="btn btn-outline-primary">&#x2194;</button>
-            </div>
-            <div className="col-3">
-              <span className="mr-1">Target Currency</span>
-              <div className="target-dropdown">
-                  <button className="btn bg-transparent border-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Dropdown button
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <a className="dropdown-item" href="#">Action</a>
-                      <a className="dropdown-item" href="#">Another action</a>
-                      <a className="dropdown-item" href="#">Something else here</a>
-                  </div>
               </div>
-            </div>
+
+              <div className="col-1">
+                <span className="mr-1 d-block">&nbsp;</span>
+                <button type="button" className="btn btn-outline-primary">&#x2194;</button>
+              </div>
+
+              <div className="col-3">
+                <span className="mr-1">Target Currency</span>
+                <div className="target-dropdown">
+                    <button className="btn bg-transparent border-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown button
+                    </button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a className="dropdown-item" href="#">Action</a>
+                        <a className="dropdown-item" href="#">Another action</a>
+                        <a className="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+              </div>
+
           </div>
           {/* The convert button column*/}
-          <div className="row no-gutters">
-            <div className="col-6">
-            </div>
-            <div className="col-6 mt-2 pr-2">
-              <div class="d-flex justify-content-end align-items-start">
-                <button type="button" className="btn btn-primary no-gutters">Convert</button>
+          <div className="row">
+            <div className="col-12 mt-2">
+              <div class="d-flex justify-content-lg-end align-items-start">
+                <button type="button" className="btn btn-primary convert-btn">Convert</button>
               </div>
             </div>
           </div>
