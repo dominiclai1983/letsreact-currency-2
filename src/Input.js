@@ -45,10 +45,19 @@ class CurrencyConverter extends React.Component {
 
     }
 
-    componetWillUnmount() {
+    handleBaseChange(event) { 
+
       let { base, target, rate, startValue, targetValue, result} = this.state;
 
-      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
+      if(base === target){
+        return;
+      }
+
+      this.setState({
+        base: event.target.value
+      })
+
+      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${event.target.value}`)
       .then(checkStatus)
       .then(json)
       .then(data => {
@@ -58,7 +67,7 @@ class CurrencyConverter extends React.Component {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targetValue: targetValue.toFixed(2)
+            targetValue: targetValue.toFixed(2),
           });
         }
       })
@@ -66,14 +75,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-    }
 
-
-    handleBaseChange(event) { 
-      this.setState({
-        base: event.target.value
-      })
-      console.log(this.state.base);
     }
 
     handleTargetChange(event) { 
@@ -83,9 +85,6 @@ class CurrencyConverter extends React.Component {
         rate: this.state.exchange[event.target.value],
         targetValue
       })
-      console.log(this.state.target);
-      console.log(this.state.rate);
-      console.log(this.state.targetValue)
     }
 
     convert(amount, rate, equation) {
@@ -96,7 +95,7 @@ class CurrencyConverter extends React.Component {
       return equation(input, rate).toFixed(3);
     }
 
-
+    
     toTargetCurrency(amount, rate){
       return amount * rate;
     }
