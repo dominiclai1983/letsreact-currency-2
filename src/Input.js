@@ -4,23 +4,13 @@ import { json, checkStatus } from './utils';
 
 import './Input.css';
 
-const Result = () => {
-  return (
-    <div className="row">
-    <div className="col-12 mt-2">
-      <h4>{this.state.startValue}</h4>
-    </div>
-  </div>
-  )
-}
-
 class CurrencyConverter extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
         startValue: 1.00,
         targetValue: null,
-        rate: 0.89,
+        rate: null,
         base: "USD",
         target: "GBP",
         exchange: [],
@@ -32,6 +22,51 @@ class CurrencyConverter extends React.Component {
       this.handleClick = this.handleClick.bind(this);
     }
 
+    componentDidMount() {
+      let { base, target, rate, startValue, targetValue, result} = this.state;
+
+      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data => {
+        console.log(data);
+        const targetValue = startValue * data.rates[target];
+        if (data.rates) {
+          this.setState({ 
+            exchange: data.rates,
+            rate: data.rates[target],
+            targetValue: targetValue.toFixed(2)
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+    }
+
+    componetWillUnmount() {
+      let { base, target, rate, startValue, targetValue, result} = this.state;
+
+      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data => {
+        console.log(data);
+        const targetValue = startValue * data.rates[target];
+        if (data.rates) {
+          this.setState({ 
+            exchange: data.rates,
+            rate: data.rates[target],
+            targetValue: targetValue.toFixed(2)
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+    }
 
 
     handleBaseChange(event) { 
@@ -42,10 +77,15 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
+      const targetValue = this.convert(this.state.startValue,this.state.exchange[event.target.value],this.toTargetCurrency);
       this.setState({
-        target: event.target.value
+        target: event.target.value,
+        rate: this.state.exchange[event.target.value],
+        targetValue
       })
       console.log(this.state.target);
+      console.log(this.state.rate);
+      console.log(this.state.targetValue)
     }
 
     convert(amount, rate, equation) {
@@ -70,7 +110,7 @@ class CurrencyConverter extends React.Component {
     }
 
     
-    handleClick(event){
+    handleClick(){
       let { base, target, rate, startValue, targetValue, result} = this.state;
 
       if(base === target){
@@ -156,21 +196,16 @@ class CurrencyConverter extends React.Component {
 
           </div>
           {/* The convert button column*/}
-          <Router>
-            <div className="row">
-              <div className="col-12 mt-2">
-                <div class="d-flex justify-content-lg-end align-items-start">
-                  <Link to="/result/">
-                    <button type="button" onClick={this.handleClick} className="btn btn-primary convert-btn">Convert</button>
-                  </Link>
-                </div>
+          <div className="row">
+            <div className="col-12 mt-2">
+              <div class="d-flex justify-content-lg-end align-items-start">
+                <button type="button" onClick={this.handleClick} className="btn btn-primary convert-btn">Convert</button>
               </div>
             </div>
-            <Route path="/result" component={Result} />
-            <Switch>
-              <Route path="/result" component={Result} />
-            </Switch>
-          </Router>  
+            <div className="col-12 mt-2">
+            <p>{startValue} of {base} is equals to {targetValue} amount of {target}</p>
+            </div>
+          </div>
 
         </div>
       )
