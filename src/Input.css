@@ -11,3 +11,12 @@ input[type=number]::-webkit-outer-spin-button {
 .convert-btn{
   margin-right: -21px;
 }
+
+
+.result{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 12px;
+  height: 40px;
+}
