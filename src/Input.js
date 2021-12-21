@@ -20,6 +20,7 @@ class CurrencyConverter extends React.Component {
       this.handleBaseChange = this.handleBaseChange.bind(this);
       this.handleTargetChange = this.handleTargetChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
+      this.handleSwap = this.handleSwap.bind(this);
     }
 
     componentDidMount() {
@@ -35,7 +36,7 @@ class CurrencyConverter extends React.Component {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targetValue: targetValue.toFixed(2)
+            targetValue: targetValue.toFixed(3)
           });
         }
       })
@@ -68,15 +69,13 @@ class CurrencyConverter extends React.Component {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targetValue: targetValue.toFixed(2),
+            targetValue: targetValue.toFixed(3),
           });
         }
       })
       .catch(error => {
         console.log(error);
       })
-
-
     }
 
     handleTargetChange(event) { 
@@ -129,7 +128,7 @@ class CurrencyConverter extends React.Component {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targetValue: targetValue.toFixed(2)
+            targetValue: targetValue.toFixed(3)
           });
         }
       })
@@ -137,6 +136,19 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
+    }
+
+    handleSwap(){
+      let {base, target} = this.state;
+      
+      const temp = base;
+      base = target;
+      target = temp;
+
+      this.setState({
+        base,
+        target,
+      });
     }
 
   
@@ -176,7 +188,7 @@ class CurrencyConverter extends React.Component {
 
               <div className="col-1">
                 <span className="mr-1 d-block">&nbsp;</span>
-                <button type="button" className="btn btn-outline-primary">&#x2194;</button>
+                <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary">&#x2194;</button>
               </div>
 
               <div className="col-3">
