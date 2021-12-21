@@ -14,6 +14,7 @@ class CurrencyConverter extends React.Component {
         base: "USD",
         target: "GBP",
         exchange: [],
+        support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"]
       };
   
       this.handleStartValueChange = this.handleStartValueChange.bind(this);
@@ -139,7 +140,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleSwap(){
-      let {base, target} = this.state;
+      let {base, target, exchange, startValue} = this.state;
       
       const temp = base;
       base = target;
@@ -149,6 +150,24 @@ class CurrencyConverter extends React.Component {
         base,
         target,
       });
+
+      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data => {
+        console.log(data);
+        const targetValue = startValue * data.rates[target];
+        if (data.rates) {
+          this.setState({ 
+            exchange: data.rates,
+            rate: data.rates[target],
+            targetValue: targetValue.toFixed(3),
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
     }
 
   
