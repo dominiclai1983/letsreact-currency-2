@@ -235,8 +235,8 @@ class CurrencyConverter extends React.Component {
                 <button type="button" onClick={this.handleClick} className="btn btn-primary convert-btn">Convert</button>
               </div>
             </div>
-            <div className="col-12 mt-2">
-            <p>{startValue} of {base} is equals to {targetValue} amount of {target}</p>
+            <div className="col-12 mt-2 border border-3 border-success rounded result-con">
+            <p className="result">{startValue} of {base} is equals to {targetValue} amount of {target}</p>
             </div>
           </div>
 
