@@ -6,7 +6,7 @@ import './Input.css';
 
 const ScaledRate = (props) => {
   const { scaledRate } = props;
-  return <div className="col-12">{scaledRate.scale} = {scaledRate.targetRate}</div>
+  return <div className="col-12 text-center">{Object.keys(scaledRate)[0]} {Object.values(scaledRate)[0]} = {Object.keys(scaledRate)[1]} {Object.values(scaledRate)[1]} </div>
 }
 
 class CurrencyConverter extends React.Component {
@@ -33,7 +33,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, targetValue, targatScale, scale} = this.state;
+      let { base, target, rate, startValue, targatScale, scale} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -53,14 +53,11 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
+      const obj = this.convertObject(scale, rate);
+
       let targatScales = targatScale.slice();
       targatScales.length = 0;
-      const obj = {};
-      for (const key of scale){
-        obj[key] = (key * rate).toFixed(2);
-      }
-
-      targatScales = Object.keys(obj).map(e => ({scale: Number(e), targetRate: obj[e]}));
+      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
 
       this.setState({
           targatScale: targatScales
@@ -70,9 +67,24 @@ class CurrencyConverter extends React.Component {
 
     }
 
+    convertObject(scaleArray, rate){
+      const obj = {};
+      for (const key of scaleArray){
+        obj[key] = (key * rate).toFixed(2);
+      }
+
+      return obj;
+    }
+
+    convertObjToArrObj(targatArray, obj, base, target){
+      targatArray.length = 0;
+      const arrayObj = Object.keys(obj).map(e => ({base: Number(e), target: obj[e]}));
+      return arrayObj;
+    }
+
     handleBaseChange(event) { 
 
-      let { base, target, rate, startValue, targetValue, targatScale, scale} = this.state;
+      let { target, startValue, targatScale, scale} = this.state;
       const e = event.target.value;
 
       this.setState({
@@ -85,14 +97,10 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
-        let targatScales = targatScale.slice();
-        targatScales.length = 0;
-        const obj = {};
-        for (const key of scale){
-          obj[key] = (key * data.rates[target]).toFixed(2);
-        }
-  
-        targatScales = Object.keys(obj).map(e => ({scale: Number(e), targetRate: obj[e]}));
+        console.log(data.base);
+        
+        const obj = this.convertObject(scale, data.rates[target]);
+        const targatScales = this.convertObjToArrObj(targatScale, obj, e, target);
 
         if(isNaN(targetValue)){
           this.setState({
@@ -113,17 +121,16 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, base, target, targatScale, scale, rate} = this.state;
+      let {startValue, exchange, targatScale, scale} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
+
+      const obj = this.convertObject(scale, exchange[e]);
+
       let targatScales = targatScale.slice();
       targatScales.length = 0;
-      const obj = {};
-      for (const key of scale){
-        obj[key] = (key * exchange[e]).toFixed(2);
-      }
-
-      targatScales = Object.keys(obj).map(e => ({scale: Number(e), targetRate: obj[e]}));
+      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [event.target.value]: obj[e]}));
+      console.log(targatScale); 
 
       this.setState({
         target: e,
@@ -141,6 +148,7 @@ class CurrencyConverter extends React.Component {
       }
 
     }
+
 
     convert(amount, rate, equation) {
       const input = parseFloat(amount);
@@ -165,7 +173,7 @@ class CurrencyConverter extends React.Component {
 
     
     handleClick(){
-      let { base, target, rate, startValue, targetValue, result, clicked, targatScale, scale} = this.state;
+      let { base, target, rate, startValue, targatScale, scale} = this.state;
 
       this.setState({
         clicked: true,
@@ -177,14 +185,12 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
+
+        const obj = this.convertObject(scale, rate);
+
         let targatScales = targatScale.slice();
         targatScales.length = 0;
-        const obj = {};
-        for (const key of scale){
-          obj[key] = (key * rate).toFixed(2);
-        }
-  
-        targatScales = Object.keys(obj).map(e => ({scale: Number(e), targetRate: obj[e]}));
+        targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
 
         if(base === target){
           this.setState({
@@ -214,7 +220,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleSwap(){
-      let {base, target, exchange, startValue} = this.state;
+      let {base, target, startValue} = this.state;
       
       const temp = base;
       base = target;
@@ -250,7 +256,7 @@ class CurrencyConverter extends React.Component {
 
   
     render() {
-      const { rate, startValue, base, target, targetValue, clicked, scale, targatScale } = this.state;
+      const { startValue, base, target, targetValue, clicked, targatScale } = this.state;
   
       return (
         <div className="container">
