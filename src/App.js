@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from './Input';
+import Footer from './Footer';
 
 import './App.css';
 
@@ -27,6 +28,7 @@ const App = () => {
     <Switch>
       <Route path="/" exact component={Input} />
     </Switch>
+      <Footer />
   </Router>
   );
 }

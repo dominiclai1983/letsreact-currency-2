@@ -76,6 +76,7 @@ class CurrencyConverter extends React.Component {
 
     }
 
+    //convert target currency from set scale of base currency to an object
     convertObject(scaleArray, rate){
       const obj = {};
       for (const key of scaleArray){
@@ -85,10 +86,38 @@ class CurrencyConverter extends React.Component {
       return obj;
     }
 
+    //convert object to array of object for easy rendering
     convertObjToArrObj(targatArray, obj, base, target){
       targatArray.length = 0;
       const arrayObj = Object.keys(obj).map(e => ({base: Number(e), target: obj[e]}));
       return arrayObj;
+    }
+
+    //method collect needed currency for displaying information
+    collectNeedCur(supportArray, dataArray){
+      let obj2 = {};
+      for(let key in dataArray){
+        for(let value in supportArray){
+          if(key === supportArray[value]){
+            obj2[key] = dataArray[key];
+          }
+        }
+      }
+      return obj2;
+    }
+
+    //method handle convert the currency
+    convert(amount, rate, equation) {
+      const input = parseFloat(amount);
+      if (Number.isNaN(input)) {
+        return '';
+      }
+      return equation(input, rate).toFixed(3);
+    }
+
+    //method handle the currency change
+    toTargetCurrency(amount, rate){
+      return amount * rate;
     }
 
     handleBaseChange(event) { 
@@ -104,10 +133,7 @@ class CurrencyConverter extends React.Component {
       .then(checkStatus)
       .then(json)
       .then(data => {
-        console.log(data);
         const targetValue = startValue * data.rates[target];
-        console.log(data.base);
-        
         const obj = this.convertObject(scale, data.rates[target]);
         let targatScales = targatScale.slice();
         targatScales.length = 0;
@@ -139,7 +165,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {base, startValue, exchange, targatScale, scale} = this.state;
+      let {startValue, exchange, targatScale, scale} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
 
@@ -170,20 +196,6 @@ class CurrencyConverter extends React.Component {
 
     }
 
-
-    convert(amount, rate, equation) {
-      const input = parseFloat(amount);
-      if (Number.isNaN(input)) {
-        return '';
-      }
-      return equation(input, rate).toFixed(3);
-    }
-
-    
-    toTargetCurrency(amount, rate){
-      return amount * rate;
-    }
-
     handleStartValueChange(event){
       const targetValue = this.convert(event.target.value, this.state.rate, this.toTargetCurrency);
       this.setState({
@@ -192,7 +204,6 @@ class CurrencyConverter extends React.Component {
       });
     }
 
-    
     handleClick(){
       let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange} = this.state;
 
@@ -248,18 +259,6 @@ class CurrencyConverter extends React.Component {
 
     }
 
-    collectNeedCur(supportArray, dataArray){
-      let obj2 = {};
-      for(let key in dataArray){
-        for(let value in supportArray){
-          if(key === supportArray[value]){
-            obj2[key] = dataArray[key];
-          }
-        }
-      }
-      return obj2;
-    }
-
     handleSwap(){
       let {base, target, startValue, scale, rate, targatScale, targatExchange, support} = this.state;
       
@@ -308,7 +307,6 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
     }
-
   
     render() {
       const { startValue, base, target, targetValue, clicked, targatScale, targatExchange } = this.state;
@@ -316,51 +314,53 @@ class CurrencyConverter extends React.Component {
       return (
         <div className="container bg-white rounded">
           <div className="text-center p-3 mb-2">
-            <h2 className="mb-2">Currency Converter</h2>
+            <h2 className="mb-2">💰 Currency Converter 💰</h2>
           </div>
 
           {/* the currency exchange app row */}
           <div className="row">
-            <div className="col-12 col-sm-3">
+            <div className="col-12 col-sm-3 text-center text-sm-left">
               <span className="mr-1">Amount</span>
+              <div className="text-center">
               <input value={startValue} onChange={this.handleStartValueChange} className="form-control input-currency" type="number" />
+              </div>
             </div>
 
 
-              <div className="col-12 col-sm-4">
+              <div className="col-12 col-sm-4 text-center text-sm-left">
                 <div className="col-xs-4">
                   <label className="mr-1">
                   Base Currency
-                  <select name="base" value={base} onChange={this.handleBaseChange} className="form-control">
-                    <option value="USD">🇺🇸 USD - US Dollar</option>
-                    <option value="GBP">🇬🇧 GBP - British Pound</option>
-                    <option value="EUR">🇪🇺 EUR - Euro</option>
-                    <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
-                    <option value="HKD">🇭🇰 HKD - HK Dollar</option>
-                    <option value="THB">🇹🇭 THB - Thai Baht</option>
-                    <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
+                    <select name="base" value={base} onChange={this.handleBaseChange} className="form-control">
+                      <option value="USD">🇺🇸 USD - US Dollar</option>
+                      <option value="GBP">🇬🇧 GBP - British Pound</option>
+                      <option value="EUR">🇪🇺 EUR - Euro</option>
+                      <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
+                      <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                      <option value="THB">🇹🇭 THB - Thai Baht</option>
+                      <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
                   </label>
                 </div>
               </div>
 
-              <div className="col-12 col-sm-1">
+              <div className="col-12 col-sm-1 text-center">
                 <span className="mr-1 d-sm-block">&nbsp;</span>
                 <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary swap-btn">&#x2194;</button>
               </div>
 
-              <div className="col-12 col-sm-4">
+              <div className="col-12 col-sm-4 text-center text-sm-left">
                 <div className="col-xs-4">
                   <label className="mr-1">
                   Target Currency
-                  <select name="target" value={target} onChange={this.handleTargetChange} className="form-control">
-                  <option value="GBP">🇬🇧 GBP - British Pound</option>
-                  <option value="USD">🇺🇸 USD - US Dollar</option>
-                  <option value="EUR">🇪🇺 EUR - Euro</option>
-                  <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
-                  <option value="HKD">🇭🇰 HKD - HK Dollar</option>
-                  <option value="THB">🇹🇭 THB - Thai Baht</option>
-                  <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
+                    <select name="target" value={target} onChange={this.handleTargetChange} className="form-control">
+                      <option value="GBP">🇬🇧 GBP - British Pound</option>
+                      <option value="USD">🇺🇸 USD - US Dollar</option>
+                      <option value="EUR">🇪🇺 EUR - Euro</option>
+                      <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
+                      <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                      <option value="THB">🇹🇭 THB - Thai Baht</option>
+                      <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
                   </label>
                 </div>
@@ -371,7 +371,7 @@ class CurrencyConverter extends React.Component {
           <div className="row">
             <div className="col-12 mt-2">
               <div className={clicked? "d-none" : null}>
-                <div class="d-flex justify-content-lg-end align-items-start">
+                <div class="d-flex justify-content-center justify-content-sm-start justify-content-lg-end align-items-start">
                   <button type="button" onClick={this.handleClick} className="btn btn-primary">Convert</button>
                 </div>
               </div>
@@ -399,7 +399,7 @@ class CurrencyConverter extends React.Component {
             </div> 
             <div className="col-12 col-sm-6 mt-1 mb3 text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
-                <h4 className="text-info mt-3">{base} Rate To Other</h4>
+                <h4 className="text-info mt-3">{base} To Other Rate</h4>
                 {(() => {
                   if(!clicked){
                     return;

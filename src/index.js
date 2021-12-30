@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faVectorSquare } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faVectorSquare, faCheckSquare } from '@fortawesome/free-solid-svg-icons'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-library.add(faVectorSquare)
+library.add(faVectorSquare, fab)
 
 ReactDOM.render(
   <React.StrictMode>
