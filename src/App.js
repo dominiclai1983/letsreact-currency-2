@@ -17,9 +17,9 @@ const App = () => {
 
       <div className="collapse navbar-collapse" id="topnavbar">
         <div className="navbar-nav ml-auto my-auto">
-          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="#">Home</a>
-          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="#">About</a>
-          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="#">Protfolio</a>
+          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="https://dominiclai1983-portfolio.netlify.app/">Home</a>
+          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="https://dominiclai1983-portfolio.netlify.app/">About</a>
+          <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="https://dominiclai1983-portfolio.netlify.app/">Protfolio</a>
           <a className="nav-item nav-link btn btn-secondary text-white my-1 my-lg-0 px-2 mr-lg-4" id="top-button" href="mailto:dominiclai1983@gmail.com" role="button">Contact Me</a>
         </div>
       </div>
