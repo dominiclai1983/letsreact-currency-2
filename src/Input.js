@@ -18,6 +18,10 @@ const DifferentRate = (props) => {
   </p>)
 }
 
+const ShowError = () => {
+  return (<p className="text-warning">Please choose two different value of currency!</p>)
+}
+ 
 class CurrencyConverter extends React.Component {
     constructor(props) {
       super(props);
@@ -91,8 +95,7 @@ class CurrencyConverter extends React.Component {
     }
 
     //convert object to array of object for easy rendering
-    convertObjToArrObj(targatArray, obj, base, target){
-      targatArray.length = 0;
+    convertObjToArrObj(obj, base, target){
       const arrayObj = Object.keys(obj).map(e => ({base: Number(e), target: obj[e]}));
       return arrayObj;
     }
@@ -392,8 +395,8 @@ class CurrencyConverter extends React.Component {
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-muted mt-3">Exchange {base} To {target}</h4>
                 {(() => {
-                  if(!clicked){
-                    return;
+                  if(base === target){
+                    return <ShowError />;
                   }
                   return targatScale.map((scaledRate, index) => {
                     return <ScaledRate key={index} scaledRate={scaledRate} />;
@@ -405,8 +408,8 @@ class CurrencyConverter extends React.Component {
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-info mt-3">{base} To Other Rate</h4>
                 {(() => {
-                  if(!clicked){
-                    return;
+                  if(base === target){
+                    return <ShowError />;
                   }
                   return targatExchange.map((differentRate, index) => {
                     return <DifferentRate key={index} differentRate={differentRate} />;
