@@ -172,7 +172,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale} = this.state;
+      let {startValue, exchange, targatScale, scale, base, target} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
 
@@ -200,7 +200,7 @@ class CurrencyConverter extends React.Component {
           targetValue
         });  
       }
-
+      
     }
 
     handleStartValueChange(event){
