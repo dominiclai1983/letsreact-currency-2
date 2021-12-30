@@ -43,7 +43,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, targatScale, scale} = this.state;
+      let { base, target, rate, startValue, targatScale, scale, support, targatExchange} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -51,11 +51,15 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
+        const obj2 = this.collectNeedCur(support, data.rates);
+        console.log(obj2);
+        targatExchange = Object.entries(obj2);
         if (data.rates) {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targetValue: targetValue.toFixed(3)
+            targetValue: targetValue.toFixed(3),
+            targatExchange
           });
         }
       })
@@ -69,7 +73,7 @@ class CurrencyConverter extends React.Component {
       targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.base]: obj[e]}));
 
       this.setState({
-          targatScale: targatScales
+          targatScale: targatScales,
         });
 
       console.log(targatScale); 
@@ -397,7 +401,7 @@ class CurrencyConverter extends React.Component {
                 })()}
               </div>
             </div> 
-            <div className="col-12 col-sm-6 mt-1 mb3 text-center">
+            <div className="col-12 col-sm-6 mt-1 bottom-result text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-info mt-3">{base} To Other Rate</h4>
                 {(() => {

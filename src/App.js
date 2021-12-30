@@ -15,7 +15,6 @@ const App = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-    
       <div className="collapse navbar-collapse" id="topnavbar">
         <div className="navbar-nav ml-auto my-auto">
           <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="#">Home</a>

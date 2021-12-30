@@ -1,13 +1,11 @@
-/*html, body {
-  position: relative; 
-  height: 350px;
-}
+
 
 body{
-  background: linear-gradient(#fde7b5, #f7d18b);
+  background: linear-gradient(#f7d18b, #fde7b5);
   background-repeat: no-repeat;
+  background-size: auto 300px;
 }
-*/
+
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -33,3 +31,8 @@ input[type=number]::-webkit-outer-spin-button {
   border-width: 2px !important;
 }
 
+@media (max-width: 576px){
+.bottom-result{
+  margin-bottom: 75px !important;
+  }
+}
