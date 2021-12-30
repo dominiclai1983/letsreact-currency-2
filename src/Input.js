@@ -200,7 +200,7 @@ class CurrencyConverter extends React.Component {
           targetValue
         });  
       }
-      
+
     }
 
     handleStartValueChange(event){
@@ -284,7 +284,7 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
-        const obj = this.convertObject(scale, rate);
+        const obj = this.convertObject(scale, data.rates[target]);
 
         let targatScales = targatScale.slice();
         targatScales.length = 0;
