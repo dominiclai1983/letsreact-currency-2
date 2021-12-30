@@ -1,3 +1,13 @@
+html, body {
+  position: relative; 
+  height: 350px;
+}
+
+body{
+  background: linear-gradient(#fde7b5, #f7d18b);
+  background-repeat: no-repeat;
+}
+
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -5,7 +15,10 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .container{
-  max-width: 700px;
+  max-width: 750px;
+  margin-top: 150px !important;
+  border: 1px solid;
+  border-color: #E4E4E4;
 }
 
 .result{
@@ -18,3 +31,4 @@ input[type=number]::-webkit-outer-spin-button {
 .border-2 {
   border-width: 2px !important;
 }
+

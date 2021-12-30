@@ -6,7 +6,16 @@ import './Input.css';
 
 const ScaledRate = (props) => {
   const { scaledRate } = props;
-  return <div className="col-12 text-center">{Object.keys(scaledRate)[0]} {Object.values(scaledRate)[0]} = {Object.keys(scaledRate)[1]} {Object.values(scaledRate)[1]} </div>
+  return (<p className="text-center inline-block exchange">
+  {Object.values(scaledRate)[0]} {Object.keys(scaledRate)[0]} = {Object.values(scaledRate)[1]} {Object.keys(scaledRate)[1]} 
+  </p>)
+}
+
+const DifferentRate = (props) => {
+  const { differentRate } = props;
+  return (<p className="text-center inline-block exchange">
+  {differentRate[0]} = {differentRate[1]} 
+  </p>)
 }
 
 class CurrencyConverter extends React.Component {
@@ -19,8 +28,9 @@ class CurrencyConverter extends React.Component {
         base: "USD",
         target: "GBP",
         exchange: [],
+        targatExchange: [],
         support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"],
-        scale: [1, 5, 10, 25, 50, 100, 500],
+        scale: [1, 5, 10, 25, 50, 100],
         targatScale: [],
         clicked: false,
       };
@@ -54,10 +64,9 @@ class CurrencyConverter extends React.Component {
       })
 
       const obj = this.convertObject(scale, rate);
-
       let targatScales = targatScale.slice();
       targatScales.length = 0;
-      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
+      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.base]: obj[e]}));
 
       this.setState({
           targatScale: targatScales
@@ -84,7 +93,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, scale} = this.state;
+      let { target, startValue, targatScale, scale, support, targatExchange} = this.state;
       const e = event.target.value;
 
       this.setState({
@@ -100,7 +109,15 @@ class CurrencyConverter extends React.Component {
         console.log(data.base);
         
         const obj = this.convertObject(scale, data.rates[target]);
-        const targatScales = this.convertObjToArrObj(targatScale, obj, e, target);
+        let targatScales = targatScale.slice();
+        targatScales.length = 0;
+        targatScales = Object.keys(obj).map(e => ({[event.target.value]: Number(e), [this.state.target]: obj[e]}));
+
+        const obj2 = this.collectNeedCur(support, data.rates);
+        console.log(obj2);
+        targatExchange.length = 0;
+        targatExchange = Object.entries(obj2);
+        console.log(targatExchange);
 
         if(isNaN(targetValue)){
           this.setState({
@@ -111,7 +128,8 @@ class CurrencyConverter extends React.Component {
             exchange: data.rates,
             rate: data.rates[target],
             targetValue: targetValue.toFixed(3),
-            targatScale: targatScales
+            targatScale: targatScales,
+            targatExchange
           });
         }
       })
@@ -121,16 +139,19 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale} = this.state;
+      let {base, startValue, exchange, targatScale, scale} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
 
-      const obj = this.convertObject(scale, exchange[e]);
-
       let targatScales = targatScale.slice();
       targatScales.length = 0;
+      const obj = {};
+      for (const key of scale){
+        obj[key] = (key * exchange[e]).toFixed(2);
+      }
       targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [event.target.value]: obj[e]}));
-      console.log(targatScale); 
+
+      console.log(targatScale);
 
       this.setState({
         target: e,
@@ -173,7 +194,7 @@ class CurrencyConverter extends React.Component {
 
     
     handleClick(){
-      let { base, target, rate, startValue, targatScale, scale} = this.state;
+      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange} = this.state;
 
       this.setState({
         clicked: true,
@@ -192,6 +213,13 @@ class CurrencyConverter extends React.Component {
         targatScales.length = 0;
         targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
 
+
+        const obj2 = this.collectNeedCur(support, exchange);
+        console.log(obj2);
+        targatExchange.length = 0;
+        targatExchange = Object.entries(obj2);
+        console.log(targatExchange);
+
         if(base === target){
           this.setState({
             targetValue : startValue.toFixed(2)
@@ -200,7 +228,8 @@ class CurrencyConverter extends React.Component {
           this.setState({ 
             exchange: data.rates,
             rate: data.rates[target],
-            targatScale: targatScales
+            targatScale: targatScales, 
+            targatExchange
           });
           if (targetValue >= 10){
             this.setState({
@@ -219,8 +248,20 @@ class CurrencyConverter extends React.Component {
 
     }
 
+    collectNeedCur(supportArray, dataArray){
+      let obj2 = {};
+      for(let key in dataArray){
+        for(let value in supportArray){
+          if(key === supportArray[value]){
+            obj2[key] = dataArray[key];
+          }
+        }
+      }
+      return obj2;
+    }
+
     handleSwap(){
-      let {base, target, startValue} = this.state;
+      let {base, target, startValue, scale, rate, targatScale, targatExchange, support} = this.state;
       
       const temp = base;
       base = target;
@@ -237,6 +278,18 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
+        const obj = this.convertObject(scale, rate);
+
+        let targatScales = targatScale.slice();
+        targatScales.length = 0;
+        targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
+
+        const obj2 = this.collectNeedCur(support, data.rates);
+        console.log(obj2);
+        targatExchange.length = 0;
+        targatExchange = Object.entries(obj2);
+        console.log(targatExchange);
+
         if(base === target){
           this.setState({
             targetValue : startValue.toFixed(2)
@@ -246,6 +299,8 @@ class CurrencyConverter extends React.Component {
             exchange: data.rates,
             rate: data.rates[target],
             targetValue: targetValue.toFixed(3),
+            targatScale: targatScales, 
+            targatExchange
           });
         }
       })
@@ -256,56 +311,56 @@ class CurrencyConverter extends React.Component {
 
   
     render() {
-      const { startValue, base, target, targetValue, clicked, targatScale } = this.state;
+      const { startValue, base, target, targetValue, clicked, targatScale, targatExchange } = this.state;
   
       return (
-        <div className="container">
+        <div className="container bg-white rounded">
           <div className="text-center p-3 mb-2">
             <h2 className="mb-2">Currency Converter</h2>
           </div>
 
           {/* the currency exchange app row */}
           <div className="row">
-            <div className="col-5">
+            <div className="col-12 col-sm-3">
               <span className="mr-1">Amount</span>
               <input value={startValue} onChange={this.handleStartValueChange} className="form-control input-currency" type="number" />
             </div>
 
 
-              <div className="col-3">
+              <div className="col-12 col-sm-4">
                 <div className="col-xs-4">
                   <label className="mr-1">
                   Base Currency
                   <select name="base" value={base} onChange={this.handleBaseChange} className="form-control">
-                    <option value="USD">🇺🇸 United States Dollar (USD)</option>
-                    <option value="GBP">🇬🇧 Great British Pound (GBP)</option>
-                    <option value="EUR">🇪🇺 Euro (EUR)</option>
-                    <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
-                    <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
-                    <option value="THB">🇹🇭 Thai Baht (THB)</option>
-                    <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+                    <option value="USD">🇺🇸 USD - US Dollar</option>
+                    <option value="GBP">🇬🇧 GBP - British Pound</option>
+                    <option value="EUR">🇪🇺 EUR - Euro</option>
+                    <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
+                    <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                    <option value="THB">🇹🇭 THB - Thai Baht</option>
+                    <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
                   </label>
                 </div>
               </div>
 
-              <div className="col-1">
-                <span className="mr-1 d-block">&nbsp;</span>
-                <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary">&#x2194;</button>
+              <div className="col-12 col-sm-1">
+                <span className="mr-1 d-sm-block">&nbsp;</span>
+                <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary swap-btn">&#x2194;</button>
               </div>
 
-              <div className="col-3">
+              <div className="col-12 col-sm-4">
                 <div className="col-xs-4">
                   <label className="mr-1">
                   Target Currency
                   <select name="target" value={target} onChange={this.handleTargetChange} className="form-control">
-                    <option value="GBP">🇬🇧 Great British Pound (GBP)</option>
-                    <option value="USD">🇺🇸 United States Dollar (USD)</option> 
-                    <option value="EUR">🇪🇺 Euro (EUR)</option>
-                    <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
-                    <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
-                    <option value="THB">🇹🇭 Thai Baht (THB)</option>
-                    <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+                  <option value="GBP">🇬🇧 GBP - British Pound</option>
+                  <option value="USD">🇺🇸 USD - US Dollar</option>
+                  <option value="EUR">🇪🇺 EUR - Euro</option>
+                  <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
+                  <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                  <option value="THB">🇹🇭 THB - Thai Baht</option>
+                  <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
                   </label>
                 </div>
@@ -323,20 +378,38 @@ class CurrencyConverter extends React.Component {
             </div>
             <div className="col-12 mt-2">
               <div className={clicked? null: "d-none"}>
-                <p className="result border border-2 border-success rounded">{startValue} {base} is equals to {targetValue} of {target}</p>
+                <p className="result bg-light border border-2 border-success rounded">{startValue} {base} is equals to {targetValue} of {target}</p>
               </div>
             </div>
           </div>
           {/* The area showing the additional information*/}
           <div className="row">
-            {(() => {
-              if(!clicked){
-                return;
-              }
-              return targatScale.map((scaledRate, index) => {
-                return <ScaledRate key={index} scaledRate={scaledRate} />;
-              })
-            })()}
+            <div className="col-12 col-sm-6 mt-1 mb-3 text-center">
+              <div className={clicked? "border border-secondary rounded": "d-none"}>
+                <h4 className="text-muted mt-3">Exchange {base} To {target}</h4>
+                {(() => {
+                  if(!clicked){
+                    return;
+                  }
+                  return targatScale.map((scaledRate, index) => {
+                    return <ScaledRate key={index} scaledRate={scaledRate} />;
+                  })
+                })()}
+              </div>
+            </div> 
+            <div className="col-12 col-sm-6 mt-1 mb3 text-center">
+              <div className={clicked? "border border-secondary rounded": "d-none"}>
+                <h4 className="text-info mt-3">{base} Rate To Other</h4>
+                {(() => {
+                  if(!clicked){
+                    return;
+                  }
+                  return targatExchange.map((differentRate, index) => {
+                    return <DifferentRate key={index} differentRate={differentRate} />;
+                  })
+                })()}
+              </div>
+            </div>
           </div>
         </div>
       )
