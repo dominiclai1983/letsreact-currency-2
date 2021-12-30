@@ -276,6 +276,9 @@ class CurrencyConverter extends React.Component {
       this.setState({
         base,
         target,
+      }, () => {
+        console.log(this.state.base);
+        console.log(this.state.target);
       });
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
