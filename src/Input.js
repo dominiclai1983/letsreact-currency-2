@@ -172,7 +172,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale, base, target} = this.state;
+      let {startValue, exchange, targatScale, scale, base, target, support, targatExchange} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
 
@@ -184,12 +184,17 @@ class CurrencyConverter extends React.Component {
       }
       targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [event.target.value]: obj[e]}));
 
-      console.log(targatScale);
+      const obj2 = this.collectNeedCur(support, exchange);
+      console.log(obj2);
+      targatExchange.length = 0;
+      targatExchange = Object.entries(obj2);
+      console.log(targatExchange);
 
       this.setState({
         target: e,
         rate: exchange[e],
-        targatScale: targatScales
+        targatScale: targatScales,
+        targatExchange
       });
       if(isNaN(targetValue)){
         this.setState({
@@ -240,7 +245,8 @@ class CurrencyConverter extends React.Component {
 
         if(base === target){
           this.setState({
-            targetValue : startValue.toFixed(2)
+            targetValue: startValue.toFixed(2),
+            targatScale: [],
           })
         }else if (data.rates) {
           this.setState({ 
