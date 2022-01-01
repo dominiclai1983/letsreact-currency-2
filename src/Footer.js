@@ -1,5 +1,4 @@
 import React from 'react';
-import { json, checkStatus } from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './Footer.css';
