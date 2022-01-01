@@ -56,8 +56,8 @@ class CurrencyConverter extends React.Component {
         console.log(data);
         const targetValue = startValue * data.rates[target];
         const obj2 = this.collectNeedCur(support, data.rates);
-        console.log(obj2);
         targatExchange = Object.entries(obj2);
+
         if (data.rates) {
           this.setState({ 
             exchange: data.rates,
@@ -72,9 +72,7 @@ class CurrencyConverter extends React.Component {
       })
 
       const obj = this.convertObject(scale, rate);
-      let targatScales = targatScale.slice();
-      targatScales.length = 0;
-      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.base]: obj[e]}));
+      let targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.base]: obj[e]}));
 
       this.setState({
           targatScale: targatScales,
@@ -94,10 +92,12 @@ class CurrencyConverter extends React.Component {
       return obj;
     }
 
-    //convert object to array of object for easy rendering
-    convertObjToArrObj(obj, base, target){
-      const arrayObj = Object.keys(obj).map(e => ({base: Number(e), target: obj[e]}));
-      return arrayObj;
+    //convert key:value pair of object to array 
+    convertObjToArr(array, targetArray, rates, equation){
+      const obj = equation(array, rates);
+      targetArray.length = 0;
+      targetArray = Object.entries(obj);
+      return targetArray;
     }
 
     //method collect needed currency for displaying information
@@ -127,6 +127,13 @@ class CurrencyConverter extends React.Component {
       return amount * rate;
     }
 
+    //convert object to array of object for easy rendering
+    convertObjToArrObj(obj, array, base, target){
+      array.lenght = 0;
+      array = Object.keys(obj).map(e => ({[base]: Number(e), [target]: obj[e]}));
+      return array;
+    }
+
     handleBaseChange(event) { 
 
       let { target, startValue, targatScale, scale, support, targatExchange} = this.state;
@@ -142,15 +149,9 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         const targetValue = startValue * data.rates[target];
         const obj = this.convertObject(scale, data.rates[target]);
-        let targatScales = targatScale.slice();
-        targatScales.length = 0;
-        targatScales = Object.keys(obj).map(e => ({[event.target.value]: Number(e), [this.state.target]: obj[e]}));
 
-        const obj2 = this.collectNeedCur(support, data.rates);
-        console.log(obj2);
-        targatExchange.length = 0;
-        targatExchange = Object.entries(obj2);
-        console.log(targatExchange);
+        let targatScales = this.convertObjToArrObj(obj, targatScale, event.target.value, this.state.target);
+        targatExchange = this.convertObjToArr(support, targatExchange, data.rates, this.collectNeedCur);
 
         if(isNaN(targetValue)){
           this.setState({
@@ -172,23 +173,13 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale, base, target, support, targatExchange} = this.state;
+      let {startValue, exchange, targatScale, scale, target, base, support, targatExchange} = this.state;
       const e = event.target.value;
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
 
-      let targatScales = targatScale.slice();
-      targatScales.length = 0;
-      const obj = {};
-      for (const key of scale){
-        obj[key] = (key * exchange[e]).toFixed(2);
-      }
-      targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [event.target.value]: obj[e]}));
-
-      const obj2 = this.collectNeedCur(support, exchange);
-      console.log(obj2);
-      targatExchange.length = 0;
-      targatExchange = Object.entries(obj2);
-      console.log(targatExchange);
+      const obj = this.convertObject(scale, exchange[e]);
+      let targatScales = this.convertObjToArrObj(obj, targatScale, base, event.target.value);
+      targatExchange = this.convertObjToArr(support, targatExchange, exchange, this.collectNeedCur);
 
       this.setState({
         target: e,
@@ -231,17 +222,8 @@ class CurrencyConverter extends React.Component {
         const targetValue = startValue * data.rates[target];
 
         const obj = this.convertObject(scale, rate);
-
-        let targatScales = targatScale.slice();
-        targatScales.length = 0;
-        targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
-
-
-        const obj2 = this.collectNeedCur(support, exchange);
-        console.log(obj2);
-        targatExchange.length = 0;
-        targatExchange = Object.entries(obj2);
-        console.log(targatExchange);
+        let targatScales = this.convertObjToArrObj(obj, targatScale, this.state.base, this.state.target);
+        targatExchange = this.convertObjToArr(support, targatExchange, exchange, this.collectNeedCur);
 
         if(base === target){
           this.setState({
@@ -293,17 +275,10 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
+
         const obj = this.convertObject(scale, data.rates[target]);
-
-        let targatScales = targatScale.slice();
-        targatScales.length = 0;
-        targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.target]: obj[e]}));
-
-        const obj2 = this.collectNeedCur(support, data.rates);
-        console.log(obj2);
-        targatExchange.length = 0;
-        targatExchange = Object.entries(obj2);
-        console.log(targatExchange);
+        let targatScales = this.convertObjToArrObj(obj, targatScale, this.state.base, this.state.target);
+        targatExchange = this.convertObjToArr(support, targatExchange, data.rates, this.collectNeedCur);
 
         if(base === target){
           this.setState({
