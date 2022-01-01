@@ -37,6 +37,8 @@ class CurrencyConverter extends React.Component {
         scale: [1, 5, 10, 25, 50, 100],
         targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
         clicked: false,
+        historyRate: [],
+        historyRange: [],
       };
   
       this.handleStartValueChange = this.handleStartValueChange.bind(this);
@@ -143,9 +145,7 @@ class CurrencyConverter extends React.Component {
         base: e
       })
 
-      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${e}`)
-      .then(checkStatus)
-      .then(json)
+      this.getRateByAPI(e)
       .then(data => {
         const targetValue = startValue * data.rates[target];
         const obj = this.convertObject(scale, data.rates[target]);
@@ -172,6 +172,9 @@ class CurrencyConverter extends React.Component {
       .catch(error => {
         console.log(error);
       })
+
+      this.getHistoryByAPI(e,target);
+
     }
 
     handleTargetChange(event) { 
@@ -199,6 +202,8 @@ class CurrencyConverter extends React.Component {
         });  
       }
 
+      this.getHistoryByAPI(base,e);
+
     }
 
     handleStartValueChange(event){
@@ -216,9 +221,7 @@ class CurrencyConverter extends React.Component {
         clicked: true,
       });
 
-      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
-      .then(checkStatus)
-      .then(json)
+      this.getRateByAPI(base)
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
@@ -253,6 +256,41 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
+      this.getHistoryByAPI(base,target);
+
+    }
+
+    //fetch exchange rate data by alt ex rate api
+    getRateByAPI(value){
+      return fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${value}`)
+      .then(checkStatus)
+      .then(json)
+    }
+
+    //fetch exchange rate history by alt ex rate api
+    getHistoryByAPI(base,target){
+      const today = new Date();
+      const trimToday = today.toISOString().split('T')[0];
+      const endDay = new Date(today.setDate(today.getDate() - 30)).toISOString().split('T')[0];
+
+      fetch(`https://altexchangerateapi.herokuapp.com/${endDay}..${trimToday}?from=${base}&to=${target}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data2 => {
+        console.log(data2);
+        const historyRange = Object.keys(data2.rates);
+        const historyRate = Object.values(data2.rates).map(x => x[target]);
+        this.setState({
+          historyRange,
+          historyRate
+        })
+        console.log(historyRange);
+        console.log(historyRate);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
     }
 
     handleSwap(){
@@ -270,9 +308,7 @@ class CurrencyConverter extends React.Component {
         console.log(this.state.target);
       });
 
-      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
-      .then(checkStatus)
-      .then(json)
+      this.getRateByAPI(base)
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
@@ -298,6 +334,8 @@ class CurrencyConverter extends React.Component {
       .catch(error => {
         console.log(error);
       })
+
+      this.getHistoryByAPI(base,target);
     }
   
     render() {
