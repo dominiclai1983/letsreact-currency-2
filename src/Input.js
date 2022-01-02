@@ -442,7 +442,7 @@ class CurrencyConverter extends React.Component {
           </div>
           {/* The area showing the additional information*/}
           <div className="row">
-            <div className="col-12 col-sm-6 mt-1 mb-2 text-center">
+            <div className="col-12 col-sm-6 mt-1 mb-3 text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-muted mt-3">Exchange {base} To {target}</h4>
                 {(() => {
@@ -455,7 +455,7 @@ class CurrencyConverter extends React.Component {
                 })()}
               </div>
             </div> 
-            <div className="col-12 col-sm-6 mt-1 mb-2 text-center">
+            <div className="col-12 col-sm-6 mt-1 mb-3 text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-info mt-3">{base} To Other Rate</h4>
                 {(() => {
