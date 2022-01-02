@@ -4,6 +4,7 @@ body{
   background: linear-gradient(#f7d18b, #fde7b5);
   background-repeat: no-repeat;
   background-size: auto 300px;
+  height: 100%;
 }
 
 
@@ -15,9 +16,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 .container{
   max-width: 750px;
-  margin-top: 110px !important;
+}
+
+.top-section{
   border: 1px solid;
   border-color: #E4E4E4;
+  margin-top: 75px !important;
 }
 
 .result{
@@ -31,8 +35,7 @@ input[type=number]::-webkit-outer-spin-button {
   border-width: 2px !important;
 }
 
-@media (max-width: 576px){
 .bottom-result{
-  margin-bottom: 75px !important;
-  }
+  margin-bottom: 350px !important;
 }
+
