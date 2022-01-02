@@ -220,7 +220,7 @@ class CurrencyConverter extends React.Component {
 
         if(isNaN(targetValue)){
           this.setState({
-            targetValue : startValue.toFixed(2)
+            targetValue : startValue
           })
         }else if (data.rates) {
           this.setState({ 
@@ -257,7 +257,7 @@ class CurrencyConverter extends React.Component {
       });
       if(isNaN(targetValue)){
         this.setState({
-          targetValue: startValue.toFixed(2)
+          targetValue: startValue
         });
       }else{
         this.setState({
@@ -294,8 +294,7 @@ class CurrencyConverter extends React.Component {
 
         if(base === target){
           this.setState({
-            targetValue: startValue.toFixed(2),
-            targatScale: [],
+            targetValue: startValue
           })
         }else if (data.rates) {
           this.setState({ 
