@@ -39,6 +39,8 @@ class CurrencyConverter extends React.Component {
         targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
         clicked: false,
       };
+
+      //known typo "targat", keep this as discover in later stage of development
   
       this.handleStartValueChange = this.handleStartValueChange.bind(this);
       this.handleBaseChange = this.handleBaseChange.bind(this);
@@ -85,7 +87,7 @@ class CurrencyConverter extends React.Component {
 
     }
 
-        //fetch exchange rate history by alt ex rate api
+    //fetch exchange rate history by alt ex rate api
     getHistoryByAPI(base,target){
       const today = new Date();
       const trimToday = today.toISOString().split('T')[0];
@@ -129,6 +131,11 @@ class CurrencyConverter extends React.Component {
         },
         options: {
           responsive: true,
+          plugins: {
+            legend:{
+              display: false
+            }
+          }
         }
       });
 
@@ -442,6 +449,7 @@ class CurrencyConverter extends React.Component {
           </div>
           {/* The area showing the additional information*/}
           <div className="row">
+            {/* Left side display exchange rate from a set scale*/}
             <div className="col-12 col-sm-6 mt-1 mb-3 text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-muted mt-3">Exchange {base} To {target}</h4>
@@ -454,7 +462,8 @@ class CurrencyConverter extends React.Component {
                   })
                 })()}
               </div>
-            </div> 
+            </div>
+            {/* right side display exchange rate aganist supported currency*/} 
             <div className="col-12 col-sm-6 mt-1 mb-3 text-center">
               <div className={clicked? "border border-secondary rounded": "d-none"}>
                 <h4 className="text-info mt-3">{base} To Other Rate</h4>
@@ -471,8 +480,10 @@ class CurrencyConverter extends React.Component {
           </div>
         </div>
         <div className="container">
+          {/* the row rendering the graph*/} 
           <div className="row">
             <div className="col-12 mt-3 bottom-result">
+              {/* would shown only if base != target and converted btn is clicked*/} 
               <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
                 <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
                 <canvas ref={this.chartRef} height="180"/>
