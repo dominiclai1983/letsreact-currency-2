@@ -134,6 +134,12 @@ class CurrencyConverter extends React.Component {
             legend:{
               display: false
             }
+          },
+          elements:{
+            point:{
+              pointStyle: 'rect',
+              radius: 5
+            }
           }
         }
       });
