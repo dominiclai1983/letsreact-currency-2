@@ -10,7 +10,7 @@ const App = () => {
   return (
   <Router>
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <FontAwesomeIcon icon="vector-square" size="2x" className="no-gutters ml-lg-5 top-icon"/><a className="navbar-brand my-auto" href="#"> Dominic Lai Currency Converter</a>
+      <FontAwesomeIcon icon="vector-square" size="2x" className="no-gutters ml-lg-5 top-icon"/><a className="navbar-brand my-auto" href="https://dominiclai1983-portfolio.netlify.app/"> Dominic Lai Currency Converter</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#topnavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
