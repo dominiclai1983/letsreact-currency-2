@@ -5,7 +5,7 @@ import './Footer.css';
 
 const Footer = () => {
     return(
-        <footer>
+        <footer className="fixed-bottom">
         <div className="container-fluid">
           <div className="row bg-secondary py-3 ">
             <div className="col-6 d-flex pl-5">

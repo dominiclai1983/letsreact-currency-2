@@ -471,10 +471,12 @@ class CurrencyConverter extends React.Component {
           </div>
         </div>
         <div className="container">
-          <div className="col-12 mb-5 mt-3">
-            <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
-              <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
-              <canvas ref={this.chartRef} />
+          <div className="row">
+            <div className="col-12 mt-3 bottom-result">
+              <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
+                <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
+                <canvas ref={this.chartRef} height="180"/>
+              </div>
             </div>
           </div>
         </div>
