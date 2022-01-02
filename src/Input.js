@@ -100,8 +100,7 @@ class CurrencyConverter extends React.Component {
         console.log(data2);
         const historyRange = Object.keys(data2.rates);
         const historyRate = Object.values(data2.rates).map(x => x[target]);
-        const title = `${base} / ${target}`
-        this.buildChart(historyRange, historyRate, title);
+        this.buildChart(historyRange, historyRate);
       })
       .catch(error => {
         console.log(error);
