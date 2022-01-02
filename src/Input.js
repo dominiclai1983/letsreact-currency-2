@@ -38,8 +38,6 @@ class CurrencyConverter extends React.Component {
         scale: [1, 5, 10, 25, 50, 100],
         targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
         clicked: false,
-        historyRate: [],
-        historyRange: [],
       };
   
       this.handleStartValueChange = this.handleStartValueChange.bind(this);
@@ -52,7 +50,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, targatScale, scale, support, targatExchange, historyRate, historyRange} = this.state;
+      let { base, target, rate, startValue, scale, support, targatExchange} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -83,14 +81,33 @@ class CurrencyConverter extends React.Component {
           targatScale: targatScales,
         });
 
-      const text = `${base} / ${target}`;
-
       this.getHistoryByAPI(base,target);  
-      this.buildChart(historyRange, historyRate, text);
 
     }
 
-    buildChart(labels, data, title){
+        //fetch exchange rate history by alt ex rate api
+    getHistoryByAPI(base,target){
+      const today = new Date();
+      const trimToday = today.toISOString().split('T')[0];
+      const endDay = new Date(today.setDate(today.getDate() - 30)).toISOString().split('T')[0];
+
+      fetch(`https://altexchangerateapi.herokuapp.com/${endDay}..${trimToday}?from=${base}&to=${target}`)
+      .then(checkStatus)
+      .then(json)
+      .then(data2 => {
+        console.log(data2);
+        const historyRange = Object.keys(data2.rates);
+        const historyRate = Object.values(data2.rates).map(x => x[target]);
+        const title = `${base} / ${target}`
+        this.buildChart(historyRange, historyRate, title);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    }
+
+    buildChart = (labels, data, title) => {
+
       const chartRef = this.chartRef.current.getContext("2d");
 
       if (typeof this.chart !== "undefined") {
@@ -113,7 +130,9 @@ class CurrencyConverter extends React.Component {
         options: {
           responsive: true,
         }
-      })
+      });
+
+      this.chart.update();
     }
 
     //convert target currency from set scale of base currency to an object
@@ -170,7 +189,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, scale, support, targatExchange, historyRange, historyRate} = this.state;
+      let { target, startValue, targatScale, scale, support, targatExchange} = this.state;
       const e = event.target.value;
 
       this.setState({
@@ -205,16 +224,12 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(e,target);
-
-      const text = `${e} / ${target}`;
-      this.getHistoryByAPI(e, target);
-      this.buildChart(historyRange, historyRate, text);
+      this.getHistoryByAPI(event.target.value,target);  
 
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale, base, support, targatExchange, historyRange, historyRate} = this.state;
+      let {startValue, exchange, targatScale, scale, base, support, targatExchange} = this.state;
       const e = event.target.value;
 
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
@@ -238,9 +253,7 @@ class CurrencyConverter extends React.Component {
         });  
       }
 
-      const text = `${base} / ${e}`;
-      this.getHistoryByAPI(base,e);
-      this.buildChart(historyRange, historyRate, text);
+      this.getHistoryByAPI(base,event.target.value);  
 
     }
 
@@ -253,7 +266,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleClick(){
-      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange, historyRange, historyRate} = this.state;
+      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange} = this.state;
 
       this.setState({
         clicked: true,
@@ -294,9 +307,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      const text = `${base} / ${target}`;
       this.getHistoryByAPI(base,target);  
-      this.buildChart(historyRange, historyRate, text);
 
     }
 
@@ -307,34 +318,10 @@ class CurrencyConverter extends React.Component {
       .then(json)
     }
 
-    //fetch exchange rate history by alt ex rate api
-    getHistoryByAPI(base,target){
-      const today = new Date();
-      const trimToday = today.toISOString().split('T')[0];
-      const endDay = new Date(today.setDate(today.getDate() - 30)).toISOString().split('T')[0];
 
-      fetch(`https://altexchangerateapi.herokuapp.com/${endDay}..${trimToday}?from=${base}&to=${target}`)
-      .then(checkStatus)
-      .then(json)
-      .then(data2 => {
-        console.log(data2);
-        const historyRange = Object.keys(data2.rates);
-        const historyRate = Object.values(data2.rates).map(x => x[target]);
-        this.setState({
-          historyRange,
-          historyRate
-        })
-        console.log(historyRange);
-        console.log(historyRate);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-
-    }
 
     handleSwap(){
-      let {base, target, startValue, scale, targatScale, targatExchange, support, historyRange, historyRate} = this.state;
+      let {base, target, startValue, scale, targatScale, targatExchange, support} = this.state;
       
       const temp = base;
       base = target;
@@ -375,9 +362,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      const text = `${base} / ${target}`;
-      this.getHistoryByAPI(base,target);
-      this.buildChart(historyRange, historyRate, text);
+      this.getHistoryByAPI(base,target);  
     }
   
     render() {
@@ -487,7 +472,7 @@ class CurrencyConverter extends React.Component {
         </div>
         <div className="container">
           <div className="col-12 mb-5 mt-3">
-            <div className={clicked && !(this.state.base == this.state.target)? null: "d-none"}>
+            <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
               <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
               <canvas ref={this.chartRef} />
             </div>
