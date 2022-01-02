@@ -108,7 +108,7 @@ class CurrencyConverter extends React.Component {
       })
     }
 
-    buildChart = (labels, data, title) => {
+    buildChart = (labels, data) => {
 
       const chartRef = this.chartRef.current.getContext("2d");
 
@@ -122,7 +122,6 @@ class CurrencyConverter extends React.Component {
           labels,
           datasets: [
             {
-              label: title,
               data,
               borderColor: 'rgb(91, 192, 222)',
               backgroundColor: 'rgb(91, 192, 222)'
