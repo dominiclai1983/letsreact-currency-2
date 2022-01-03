@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from './Input';
@@ -6,16 +6,21 @@ import Footer from './Footer';
 
 import './App.css';
 
-const App = () => {
+const App = (props) => {
+
+  //using useState to control the toogle button manual show or not after clicking
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
   return (
   <Router>
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <FontAwesomeIcon icon="vector-square" size="2x" className="no-gutters ml-lg-5 top-icon"/><a className="navbar-brand my-auto" href="https://dominiclai1983-portfolio.netlify.app/"> Dominic Lai Currency Converter</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#topnavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#topnavbar" aria-controls="topnavbar" aria-expanded={!isNavCollapsed ? true : false} onClick={handleNavCollapse} aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
 
-      <div className="collapse navbar-collapse" id="topnavbar">
+      <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="topnavbar">
         <div className="navbar-nav ml-auto my-auto">
           <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="https://dominiclai1983-portfolio.netlify.app/">Home</a>
           <a className="nav-item nav-link mx-lg-4 my-1 my-lg-0 text-dark" href="https://dominiclai1983-portfolio.netlify.app/">About</a>
