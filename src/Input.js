@@ -32,16 +32,16 @@ class CurrencyConverter extends React.Component {
         rate: null,
         base: "USD",
         target: "GBP",
-        exchange: [],
+        exchange: [], //holding data of exchange rate that fetching from api 
         targatExchange: [], //holding data for the right of result table i.e [base] against other rate
         support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"],
         scale: [1, 5, 10, 25, 50, 100],
         targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
         clicked: false,
-        dateRange: 30
+        dateRange: 30 //control the length of the graph
       };
 
-      //known typo "targat", keep this as discover in later stage of development
+      //known typo "targat", keep this as discover the error in later stage of development
   
       this.handleStartValueChange = this.handleStartValueChange.bind(this);
       this.handleBaseChange = this.handleBaseChange.bind(this);
@@ -85,12 +85,12 @@ class CurrencyConverter extends React.Component {
           targatScale: targatScales,
         });
 
-      this.getHistoryByAPI(base,target, dateRange);  
+      this.getHistoryByAPI(base, target, dateRange);  
 
     }
 
     //fetch exchange rate history by alt ex rate api
-    getHistoryByAPI(base,target, date){
+    getHistoryByAPI(base, target, date){
       const today = new Date();
       const trimToday = today.toISOString().split('T')[0];
       const endDay = new Date(today.setDate(today.getDate() - date)).toISOString().split('T')[0];
@@ -237,7 +237,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(event.target.value,target,dateRange);  
+      this.getHistoryByAPI(event.target.value, target, dateRange);  
 
     }
 
@@ -266,7 +266,7 @@ class CurrencyConverter extends React.Component {
         });  
       }
 
-      this.getHistoryByAPI(base,event.target.value, dateRange);  
+      this.getHistoryByAPI(base, event.target.value, dateRange);  
 
     }
 
@@ -319,7 +319,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(base,target, dateRange);  
+      this.getHistoryByAPI(base, target, dateRange);  
 
     }
 
@@ -333,9 +333,7 @@ class CurrencyConverter extends React.Component {
     handDateRangeChange(event){
 
       let {base, target} = this.state;
-
       const e = Number(event.target.value);
-      console.log(e);
 
       this.setState({
         dateRange: e
@@ -358,7 +356,7 @@ class CurrencyConverter extends React.Component {
       }, () => {
         console.log(this.state.base);
         console.log(this.state.target);
-      });
+      });//ensure setState update this.state
 
       this.getRateByAPI(base)
       .then(data => {
@@ -387,7 +385,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(base,target,dateRange);  
+      this.getHistoryByAPI(base, target, dateRange);  
     }
   
     render() {
