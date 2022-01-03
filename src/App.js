@@ -35,6 +35,7 @@ const App = (props) => {
       <Footer />
   </Router>
   );
+
 }
 
 export default App;
