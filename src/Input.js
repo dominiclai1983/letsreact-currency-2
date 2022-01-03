@@ -38,6 +38,7 @@ class CurrencyConverter extends React.Component {
         scale: [1, 5, 10, 25, 50, 100],
         targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
         clicked: false,
+        dateRange: 30
       };
 
       //known typo "targat", keep this as discover in later stage of development
@@ -52,7 +53,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, scale, support, targatExchange} = this.state;
+      let { base, target, rate, startValue, scale, support, targatExchange, dateRange} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -83,15 +84,15 @@ class CurrencyConverter extends React.Component {
           targatScale: targatScales,
         });
 
-      this.getHistoryByAPI(base,target);  
+      this.getHistoryByAPI(base,target, dateRange);  
 
     }
 
     //fetch exchange rate history by alt ex rate api
-    getHistoryByAPI(base,target){
+    getHistoryByAPI(base,target, date){
       const today = new Date();
       const trimToday = today.toISOString().split('T')[0];
-      const endDay = new Date(today.setDate(today.getDate() - 30)).toISOString().split('T')[0];
+      const endDay = new Date(today.setDate(today.getDate() - date)).toISOString().split('T')[0];
 
       fetch(`https://altexchangerateapi.herokuapp.com/${endDay}..${trimToday}?from=${base}&to=${target}`)
       .then(checkStatus)
@@ -200,7 +201,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, scale, support, targatExchange} = this.state;
+      let { target, startValue, targatScale, scale, support, targatExchange, dateRange} = this.state;
       const e = event.target.value;
 
       this.setState({
@@ -235,12 +236,12 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(event.target.value,target);  
+      this.getHistoryByAPI(event.target.value,target,dateRange);  
 
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale, base, support, targatExchange} = this.state;
+      let {startValue, exchange, targatScale, scale, base, support, targatExchange, dateRange} = this.state;
       const e = event.target.value;
 
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
@@ -264,7 +265,7 @@ class CurrencyConverter extends React.Component {
         });  
       }
 
-      this.getHistoryByAPI(base,event.target.value);  
+      this.getHistoryByAPI(base,event.target.value, dateRange);  
 
     }
 
@@ -277,7 +278,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleClick(){
-      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange} = this.state;
+      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange, dateRange} = this.state;
 
       this.setState({
         clicked: true,
@@ -317,7 +318,7 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(base,target);  
+      this.getHistoryByAPI(base,target, dateRange);  
 
     }
 
@@ -328,10 +329,17 @@ class CurrencyConverter extends React.Component {
       .then(json)
     }
 
+    handDateRangeChange(event){
 
+      const e = event.target.value;
+      console.log(e);
+      console.log(typeof e);
+
+      this.getHistoryByAPI(this.state.base,this.state.target, e);  
+    }
 
     handleSwap(){
-      let {base, target, startValue, scale, targatScale, targatExchange, support} = this.state;
+      let {base, target, startValue, scale, targatScale, targatExchange, support, dateRange} = this.state;
       
       const temp = base;
       base = target;
@@ -372,11 +380,11 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(base,target);  
+      this.getHistoryByAPI(base,target,dateRange);  
     }
   
     render() {
-      const { startValue, base, target, targetValue, clicked, targatScale, targatExchange } = this.state;
+      const { startValue, base, target, targetValue, clicked, targatScale, targatExchange, dateRange } = this.state;
   
       return (
         <React.Fragment>
@@ -490,6 +498,20 @@ class CurrencyConverter extends React.Component {
               <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
                 <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
                 <canvas ref={this.chartRef} height="180"/>
+                {/*
+                <div className="d-flex justify-content-center">
+                  <div className="input-group my-2 w-50">
+                    <div className="input-group-prepend">
+                      <label className="input-group-text" for="inputGroupSelect01">Display Rate History In</label>
+                    </div>
+                    <select name="dateRange" value={dateRange} onChange={this.handDateRangeChange} className="custom-select" id="inputGroupSelect01">
+                      <option selected value="30">30 Days</option>
+                      <option value="60">60 Days</option>
+                      <option value="90">90 Days</option>
+                    </select>
+                  </div>
+                </div>
+                */}
               </div>
             </div>
           </div>
