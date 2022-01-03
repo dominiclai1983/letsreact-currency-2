@@ -48,6 +48,7 @@ class CurrencyConverter extends React.Component {
       this.handleTargetChange = this.handleTargetChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
       this.handleSwap = this.handleSwap.bind(this);
+      this.handDateRangeChange = this.handDateRangeChange.bind(this);
 
       this.chartRef = React.createRef();
     }
@@ -331,11 +332,17 @@ class CurrencyConverter extends React.Component {
 
     handDateRangeChange(event){
 
-      const e = event.target.value;
-      console.log(e);
-      console.log(typeof e);
+      let {base, target} = this.state;
 
-      this.getHistoryByAPI(this.state.base,this.state.target, e);  
+      const e = Number(event.target.value);
+      console.log(e);
+
+      this.setState({
+        dateRange: e
+      })
+      
+      this.getHistoryByAPI(base, target, e);  
+
     }
 
     handleSwap(){
@@ -496,22 +503,22 @@ class CurrencyConverter extends React.Component {
             <div className="col-12 mt-3 bottom-result">
               {/* would shown only if base != target and converted btn is clicked*/} 
               <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
-                <h5 className="text-info text-center">Past 30 Days Rate History of {base} to {target}</h5>
+                <h5 className="text-info text-center">Past {dateRange} Days Rate History of {base} to {target}</h5>
                 <canvas ref={this.chartRef} height="180"/>
-                {/*
+                {/*Input group to control the chart display length*/}
                 <div className="d-flex justify-content-center">
                   <div className="input-group my-2 w-50">
                     <div className="input-group-prepend">
-                      <label className="input-group-text" for="inputGroupSelect01">Display Rate History In</label>
+                      <label className="input-group-text" for="inputGroupSelect01">Display History Rate In</label>
                     </div>
                     <select name="dateRange" value={dateRange} onChange={this.handDateRangeChange} className="custom-select" id="inputGroupSelect01">
-                      <option selected value="30">30 Days</option>
+                      <option value="30">30 Days</option>
                       <option value="60">60 Days</option>
                       <option value="90">90 Days</option>
                     </select>
                   </div>
                 </div>
-                */}
+              
               </div>
             </div>
           </div>
