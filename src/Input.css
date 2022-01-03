@@ -39,3 +39,20 @@ input[type=number]::-webkit-outer-spin-button {
   margin-bottom: 65px !important;
 }
 
+@media (max-width: 768px){
+  .date-length{
+    width: 45% !important;
+  }
+}
+
+@media (max-width: 576px){
+  .date-length{
+    width: 64% !important;
+  }
+}
+
+@media (min-width: 768px){
+  .date-length{
+    width: 45% !important;
+  }
+}

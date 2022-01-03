@@ -505,14 +505,14 @@ class CurrencyConverter extends React.Component {
                 <canvas ref={this.chartRef} height="180"/>
                 {/*Input group to control the chart display length*/}
                 <div className="d-flex justify-content-center">
-                  <div className="input-group my-2 w-50">
+                  <div className="input-group my-2 date-length">
                     <div className="input-group-prepend">
                       <label className="input-group-text" for="inputGroupSelect01">Display History Rate In</label>
                     </div>
                     <select name="dateRange" value={dateRange} onChange={this.handDateRangeChange} className="custom-select" id="inputGroupSelect01">
-                      <option value="30">30 Days</option>
-                      <option value="60">60 Days</option>
-                      <option value="90">90 Days</option>
+                      <option value="30" className="text-right">30 Days</option>
+                      <option value="60" className="text-right">60 Days</option>
+                      <option value="90" className="text-right">90 Days</option>
                     </select>
                   </div>
                 </div>
