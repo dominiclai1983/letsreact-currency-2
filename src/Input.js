@@ -33,10 +33,10 @@ class CurrencyConverter extends React.Component {
         base: "USD",
         target: "GBP",
         exchange: [], //holding data of exchange rate that fetching from api 
-        targatExchange: [], //holding data for the right of result table i.e [base] against other rate
+        targatExchange: [], //holding data for the right side of result table i.e {base} against other rate
         support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"],
         scale: [1, 5, 10, 25, 50, 100],
-        targatScale: [], //holding the data for the left of the result table i.e exchange [base] to [target]
+        targatScale: [], //holding the data for the left side of the result table i.e exchange {base} to {target}
         clicked: false,
         dateRange: 30 //control the length of the graph
       };
@@ -330,6 +330,7 @@ class CurrencyConverter extends React.Component {
       .then(json)
     }
 
+    //method handle the change of the length of the graph
     handDateRangeChange(event){
 
       let {base, target} = this.state;
@@ -369,7 +370,7 @@ class CurrencyConverter extends React.Component {
 
         if(base === target){
           this.setState({
-            targetValue : startValue.toFixed(2)
+            targetValue : startValue
           })
         }else if (data.rates) {
           this.setState({ 
@@ -407,7 +408,6 @@ class CurrencyConverter extends React.Component {
               </div>
             </div>
 
-
               <div className="col-12 col-sm-4 text-center text-sm-left">
                 <div className="col-xs-4">
                   <label className="mr-1">
@@ -425,6 +425,7 @@ class CurrencyConverter extends React.Component {
                 </div>
               </div>
 
+              {/* the swap button */}
               <div className="col-12 col-sm-1 text-center">
                 <span className="mr-1 d-sm-block">&nbsp;</span>
                 <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary swap-btn">&#x2194;</button>
@@ -498,16 +499,14 @@ class CurrencyConverter extends React.Component {
         <div className="container">
           {/* the row rendering the graph*/} 
           <div className="row">
-            <div className="col-12 mt-3 bottom-result">
+            <div className="col-12 mt-1 bottom-result">
               {/* would shown only if base != target and converted btn is clicked*/} 
               <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
-                <h5 className="text-info text-center">Past {dateRange} Days Rate History of {base} to {target}</h5>
-                <canvas ref={this.chartRef} height="180"/>
                 {/*Input group to control the chart display length*/}
                 <div className="d-flex justify-content-center">
-                  <div className="input-group my-2 date-length">
+                  <div className="input-group mb-2 date-length">
                     <div className="input-group-prepend">
-                      <label className="input-group-text" for="inputGroupSelect01">Display History Rate In</label>
+                      <label className="input-group-text" for="inputGroupSelect01">Display Historical Rate In</label>
                     </div>
                     <select name="dateRange" value={dateRange} onChange={this.handDateRangeChange} className="custom-select" id="inputGroupSelect01">
                       <option value="30" className="text-right">30 Days</option>
@@ -516,7 +515,8 @@ class CurrencyConverter extends React.Component {
                     </select>
                   </div>
                 </div>
-              
+                <h5 className="text-info text-center">Past {dateRange} Days Rate History of {base} to {target}</h5>
+                <canvas ref={this.chartRef} height="180"/>              
               </div>
             </div>
           </div>
