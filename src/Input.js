@@ -509,9 +509,9 @@ class CurrencyConverter extends React.Component {
                       <label className="input-group-text" for="inputGroupSelect01">Display Historical Rate In</label>
                     </div>
                     <select name="dateRange" value={dateRange} onChange={this.handDateRangeChange} className="custom-select" id="inputGroupSelect01">
-                      <option value="30" className="text-right">30 Days</option>
-                      <option value="60" className="text-right">60 Days</option>
-                      <option value="90" className="text-right">90 Days</option>
+                      <option value="30" className="text-center">30 Days</option>
+                      <option value="60" className="text-center">60 Days</option>
+                      <option value="90" className="text-center">90 Days</option>
                     </select>
                   </div>
                 </div>
