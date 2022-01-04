@@ -504,7 +504,7 @@ class CurrencyConverter extends React.Component {
               <div className={clicked && !(this.state.base === this.state.target)? null: "d-none"}>
                 {/*Input group to control the chart display length*/}
                 <div className="d-flex justify-content-center">
-                  <div className="input-group mb-2 date-length">
+                  <div className="input-group input-group-sm mb-3 date-length">
                     <div className="input-group-prepend">
                       <label className="input-group-text" for="inputGroupSelect01">Display Historical Rate In</label>
                     </div>
