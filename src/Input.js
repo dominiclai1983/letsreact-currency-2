@@ -37,7 +37,8 @@ class CurrencyConverter extends React.Component {
         targatExchange: [], //holding data for the right side of result table i.e {base} against other rate
         targatScale: [], //holding the data for the left side of the result table i.e exchange {base} to {target}
         clicked: false,
-        dateRange: 30 //control the length of the graph
+        dateRange: 30, //control the length of the graph
+        sign: "$"
       };
 
       //known typo "targat", keep this as discover the error in later stage of development
@@ -198,13 +199,41 @@ class CurrencyConverter extends React.Component {
       return array;
     }
 
+    //method handle the currency sign change when base currency is change
+    changeSign(base){
+
+      switch(base){
+        case 'USD':
+        case 'HKD':
+          return '$';
+          break;
+        case 'CNY':
+        case 'JPY':
+          return "¥";
+          break;
+        case 'GBP':
+          return "£";
+          break;
+        case 'EUR':
+          return "€";
+          break;
+        case 'THB':
+          return "฿";
+          break;
+        default:
+          return "$";
+      }
+    }
+
     handleBaseChange(event) { 
 
       let { target, startValue, targatScale, scale, targatExchange, dateRange} = this.state;
       const e = event.target.value;
+      const sign = this.changeSign(e);
 
       this.setState({
-        base: e
+        base: e,
+        sign 
       })
 
       this.getRateByAPI(e)
@@ -388,7 +417,7 @@ class CurrencyConverter extends React.Component {
     }
   
     render() {
-      const { startValue, base, target, targetValue, clicked, targatScale, targatExchange, dateRange } = this.state;
+      const { startValue, base, target, targetValue, clicked, targatScale, targatExchange, dateRange, sign } = this.state;
   
       return (
         <React.Fragment>
@@ -402,7 +431,12 @@ class CurrencyConverter extends React.Component {
             <div className="col-12 col-sm-3 text-center text-sm-left">
               <span className="mr-1">Amount</span>
               <div className="text-center">
-              <input value={startValue} onChange={this.handleStartValueChange} className="form-control input-currency" type="number" />
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">{sign}</span>
+                  </div>
+                  <input value={startValue} onChange={this.handleStartValueChange} className="form-control input-currency" type="number" />
+                </div>
               </div>
             </div>
 
