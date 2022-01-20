@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from 'chart.js/auto';
-import {scale} from './arrayDate';
+import {scale, support} from './arrayDate';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { json, checkStatus } from './utils';
 
@@ -35,8 +35,6 @@ class CurrencyConverter extends React.Component {
         target: "GBP",
         exchange: [], //holding data of exchange rate that fetching from api 
         targatExchange: [], //holding data for the right side of result table i.e {base} against other rate
-        support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"],
-
         targatScale: [], //holding the data for the left side of the result table i.e exchange {base} to {target}
         clicked: false,
         dateRange: 30 //control the length of the graph
@@ -55,7 +53,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, support, targatExchange, dateRange, targatScale} = this.state;
+      let { base, target, rate, startValue, targatExchange, dateRange, targatScale} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -203,7 +201,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, scale, support, targatExchange, dateRange} = this.state;
+      let { target, startValue, targatScale, scale, targatExchange, dateRange} = this.state;
       const e = event.target.value;
 
       this.setState({
@@ -243,7 +241,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, base, support, targatExchange, dateRange} = this.state;
+      let {startValue, exchange, targatScale, base, targatExchange, dateRange} = this.state;
       const e = event.target.value;
 
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
@@ -280,7 +278,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleClick(){
-      let { base, target, rate, startValue, targatScale, exchange, support, targatExchange, dateRange} = this.state;
+      let { base, target, rate, startValue, targatScale, exchange, targatExchange, dateRange} = this.state;
 
       this.setState({
         clicked: true,
@@ -346,7 +344,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleSwap(){
-      let {base, target, startValue, targatScale, targatExchange, support, dateRange} = this.state;
+      let {base, target, startValue, targatScale, targatExchange, dateRange} = this.state;
       
       const temp = base;
       base = target;
