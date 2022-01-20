@@ -70,8 +70,9 @@ class CurrencyConverter extends React.Component {
             exchange: data.rates,
             rate: data.rates[target],
             targetValue: targetValue.toFixed(3),
-            targatExchange
-          });
+            targatExchange}, () =>
+              console.log(this.state.rate)
+            );
         }
       })
       .catch(error => {
