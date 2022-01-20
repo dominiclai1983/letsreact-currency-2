@@ -234,6 +234,8 @@ class CurrencyConverter extends React.Component {
       this.setState({
         base: e,
         sign 
+      }, () =>{
+        console.log(this.state.sign); //ensure the sign is updated for rendering
       })
 
       this.getRateByAPI(e)
