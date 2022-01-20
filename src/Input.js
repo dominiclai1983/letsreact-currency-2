@@ -53,19 +53,18 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, targatExchange, dateRange, targatScale} = this.state;
+      let { base, target, startValue, targatExchange, dateRange, targatScale} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
       .then(json)
       .then(data => {
         console.log(data);
-        const targetValue = startValue * data.rates[target];
-        
+        const targetValue = startValue * data.rates[target]; //update the exchanged value
+
         const obj = this.convertObject(scale, data.rates[target]);
-        console.log(obj);
         let targatScales = this.convertObjToArrObj(obj,targatScale,base,target)
-        console.log(targatScales);
+        console.log(targatScales)
         const obj2 = this.collectNeedCur(support, data.rates);
         targatExchange = Object.entries(obj2);
 
