@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'chart.js/auto';
+import {scale} from './arrayDate';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { json, checkStatus } from './utils';
 
@@ -35,7 +36,7 @@ class CurrencyConverter extends React.Component {
         exchange: [], //holding data of exchange rate that fetching from api 
         targatExchange: [], //holding data for the right side of result table i.e {base} against other rate
         support: ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"],
-        scale: [1, 5, 10, 25, 50, 100],
+
         targatScale: [], //holding the data for the left side of the result table i.e exchange {base} to {target}
         clicked: false,
         dateRange: 30 //control the length of the graph
@@ -54,7 +55,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, rate, startValue, scale, support, targatExchange, dateRange} = this.state;
+      let { base, target, rate, startValue, support, targatExchange, dateRange, targatScale} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -62,6 +63,11 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         console.log(data);
         const targetValue = startValue * data.rates[target];
+        
+        const obj = this.convertObject(scale, data.rates[target]);
+        console.log(obj);
+        let targatScales = this.convertObjToArrObj(obj,targatScale,base,target)
+        console.log(targatScales);
         const obj2 = this.collectNeedCur(support, data.rates);
         targatExchange = Object.entries(obj2);
 
@@ -70,6 +76,7 @@ class CurrencyConverter extends React.Component {
             exchange: data.rates,
             rate: data.rates[target],
             targetValue: targetValue.toFixed(3),
+            targatScale: targatScales,
             targatExchange}, () =>
               console.log(this.state.rate)
             );
@@ -78,13 +85,6 @@ class CurrencyConverter extends React.Component {
       .catch(error => {
         console.log(error);
       })
-
-      const obj = this.convertObject(scale, rate);
-      let targatScales = Object.keys(obj).map(e => ({[this.state.base]: Number(e), [this.state.base]: obj[e]}));
-
-      this.setState({
-          targatScale: targatScales,
-        });
 
       this.getHistoryByAPI(base, target, dateRange);  
 
@@ -243,7 +243,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleTargetChange(event) { 
-      let {startValue, exchange, targatScale, scale, base, support, targatExchange, dateRange} = this.state;
+      let {startValue, exchange, targatScale, base, support, targatExchange, dateRange} = this.state;
       const e = event.target.value;
 
       const targetValue = this.convert(startValue,exchange[e],this.toTargetCurrency);
@@ -280,7 +280,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleClick(){
-      let { base, target, rate, startValue, targatScale, scale, exchange, support, targatExchange, dateRange} = this.state;
+      let { base, target, rate, startValue, targatScale, exchange, support, targatExchange, dateRange} = this.state;
 
       this.setState({
         clicked: true,
@@ -346,7 +346,7 @@ class CurrencyConverter extends React.Component {
     }
 
     handleSwap(){
-      let {base, target, startValue, scale, targatScale, targatExchange, support, dateRange} = this.state;
+      let {base, target, startValue, targatScale, targatExchange, support, dateRange} = this.state;
       
       const temp = base;
       base = target;
