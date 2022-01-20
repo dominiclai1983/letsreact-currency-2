@@ -380,12 +380,16 @@ class CurrencyConverter extends React.Component {
       base = target;
       target = temp;
 
+      const sign = this.changeSign(base);
+
       this.setState({
         base,
         target,
+        sign
       }, () => {
         console.log(this.state.base);
         console.log(this.state.target);
+        console.log(this.state.sign);
       });//ensure setState update this.state
 
       this.getRateByAPI(base)
