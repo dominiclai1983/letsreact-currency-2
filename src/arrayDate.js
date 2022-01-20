@@ -3,5 +3,5 @@ export const support = ["USD", "GBP", "EUR", "CNY", "HKD", "THB", "JPY"];
 
 export default{
     scale,
-    support
+    support,
 }
