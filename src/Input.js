@@ -64,8 +64,9 @@ class CurrencyConverter extends React.Component {
         const targetValue = startValue * data.rates[target]; //update the exchanged value
 
         const obj = this.convertObject(scale, data.rates[target]);
-        let targatScales = this.convertObjToArrObj(obj,targatScale,base,target)
-        console.log(targatScales)
+        let targatScales = this.convertObjToArrObj(obj,targatScale,base,target);
+
+        //this is the problem!
         const obj2 = this.collectNeedCur(support, data.rates);
         targatExchange = Object.entries(obj2);
 
@@ -227,7 +228,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, scale, targatExchange, dateRange} = this.state;
+      let { target, startValue, targatScale, targatExchange, dateRange, exchange, } = this.state;
       const e = event.target.value;
       const sign = this.changeSign(e);
 
@@ -242,7 +243,7 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         const targetValue = startValue * data.rates[target];
         const obj = this.convertObject(scale, data.rates[target]);
-
+        console.log(obj);
         //convert obj into array of object for easy rendering of result for left result table
         let targatScales = this.convertObjToArrObj(obj, targatScale, e, target);
         //first collect the needed rate from data.rates, then convert to each entry as pair of array by Object.Entries() method
@@ -261,6 +262,7 @@ class CurrencyConverter extends React.Component {
             targatExchange
           });
         }
+
       })
       .catch(error => {
         console.log(error);
@@ -466,7 +468,7 @@ class CurrencyConverter extends React.Component {
               {/* the swap button */}
               <div className="col-12 col-sm-1 text-center">
                 <span className="mr-1 d-sm-block">&nbsp;</span>
-                <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary swap-btn">&#x2194;</button>
+                <button type="button" onClick={this.handleSwap} className="btn btn-outline-primary swap-btn">&#x2194;</button> 
               </div>
 
               <div className="col-12 col-sm-4 text-center text-sm-left">
