@@ -1,28 +1,10 @@
 import React from 'react';
 import Chart from 'chart.js/auto';
 import {scale, support} from './arrayDate';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { json, checkStatus } from './utils';
+import {ScaledRate, DifferentRate, ShowError} from './component';
 
 import './Input.css';
-
-const ScaledRate = (props) => {
-  const { scaledRate } = props;
-  return (<p className="text-center inline-block">
-  {Object.values(scaledRate)[0]} {Object.keys(scaledRate)[0]} = {Object.values(scaledRate)[1]} {Object.keys(scaledRate)[1]} 
-  </p>)
-}
-
-const DifferentRate = (props) => {
-  const { differentRate } = props;
-  return (<p className="text-center inline-block">
-  {differentRate[0]} = {differentRate[1]} 
-  </p>)
-}
-
-const ShowError = () => {
-  return (<p className="text-warning">Please choose two different value of currency!</p>)
-}
  
 class CurrencyConverter extends React.Component {
     constructor(props) {
@@ -54,7 +36,7 @@ class CurrencyConverter extends React.Component {
     }
 
     componentDidMount() {
-      let { base, target, startValue, targatExchange, dateRange, targatScale} = this.state;
+      let { base, target, startValue, targatExchange, targatScale} = this.state;
 
       fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
       .then(checkStatus)
@@ -85,7 +67,6 @@ class CurrencyConverter extends React.Component {
         console.log(error);
       })
 
-      this.getHistoryByAPI(base, target, dateRange);  
 
     }
 
@@ -228,7 +209,7 @@ class CurrencyConverter extends React.Component {
 
     handleBaseChange(event) { 
 
-      let { target, startValue, targatScale, targatExchange, dateRange, exchange, } = this.state;
+      let { target, startValue, targatScale, targatExchange, dateRange } = this.state;
       const e = event.target.value;
       const sign = this.changeSign(e);
 
@@ -458,6 +439,7 @@ class CurrencyConverter extends React.Component {
                       <option value="EUR">🇪🇺 EUR - Euro</option>
                       <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
                       <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                      <option value="AUD">🇭🇰 AUD - Australia Dollar</option>
                       <option value="THB">🇹🇭 THB - Thai Baht</option>
                       <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
@@ -481,6 +463,7 @@ class CurrencyConverter extends React.Component {
                       <option value="EUR">🇪🇺 EUR - Euro</option>
                       <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
                       <option value="HKD">🇭🇰 HKD - HK Dollar</option>
+                      <option value="AUD">🇭🇰 AUD - Australia Dollar</option>
                       <option value="THB">🇹🇭 THB - Thai Baht</option>
                       <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
                     </select>
