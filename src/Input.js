@@ -2,7 +2,7 @@ import React from 'react';
 import Chart from 'chart.js/auto';
 import {scale, support} from './arrayDate';
 import { json, checkStatus } from './utils';
-import {ScaledRate, DifferentRate, ShowError} from './component';
+import {ScaledRate, DifferentRate, ShowError, BaseValueComp, TargetValueComp} from './component';
 
 import './Input.css';
  
@@ -187,6 +187,7 @@ class CurrencyConverter extends React.Component {
       switch(base){
         case 'USD':
         case 'HKD':
+        case 'AUD':
           return '$';
           break;
         case 'CNY':
@@ -434,14 +435,7 @@ class CurrencyConverter extends React.Component {
                   <label className="mr-1">
                   Base Currency
                     <select name="base" value={base} onChange={this.handleBaseChange} className="form-control">
-                      <option value="USD">🇺🇸 USD - US Dollar</option>
-                      <option value="GBP">🇬🇧 GBP - British Pound</option>
-                      <option value="EUR">🇪🇺 EUR - Euro</option>
-                      <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
-                      <option value="HKD">🇭🇰 HKD - HK Dollar</option>
-                      <option value="AUD">🇭🇰 AUD - Australia Dollar</option>
-                      <option value="THB">🇹🇭 THB - Thai Baht</option>
-                      <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
+                      <BaseValueComp />
                     </select>
                   </label>
                 </div>
@@ -458,14 +452,7 @@ class CurrencyConverter extends React.Component {
                   <label className="mr-1">
                   Target Currency
                     <select name="target" value={target} onChange={this.handleTargetChange} className="form-control">
-                      <option value="GBP">🇬🇧 GBP - British Pound</option>
-                      <option value="USD">🇺🇸 USD - US Dollar</option>
-                      <option value="EUR">🇪🇺 EUR - Euro</option>
-                      <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
-                      <option value="HKD">🇭🇰 HKD - HK Dollar</option>
-                      <option value="AUD">🇭🇰 AUD - Australia Dollar</option>
-                      <option value="THB">🇹🇭 THB - Thai Baht</option>
-                      <option value="JPY">🇯🇵 JPY - Japanese Yan</option>
+                      <TargetValueComp />
                     </select>
                   </label>
                 </div>
