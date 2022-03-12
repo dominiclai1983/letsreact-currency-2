@@ -41,7 +41,7 @@ class CurrencyConverter extends React.Component {
     componentDidMount() {
       let { base, target, startValue, targatExchange, targatScale} = this.state;
       const API_HOST = process.env.REACT_APP_HOST;
-      console.log(API_HOST);
+
 
       fetch(API_HOST+'latest?from='+base)
       .then(checkStatus)
