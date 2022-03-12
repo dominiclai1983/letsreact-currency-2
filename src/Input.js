@@ -5,6 +5,8 @@ import { json, checkStatus } from './utils';
 import {ScaledRate, DifferentRate, ShowError, BaseValueComp, TargetValueComp} from './component';
 
 import './Input.css';
+
+
  
 class CurrencyConverter extends React.Component {
     constructor(props) {
@@ -35,14 +37,15 @@ class CurrencyConverter extends React.Component {
       this.chartRef = React.createRef();
     }
 
+
     componentDidMount() {
       let { base, target, startValue, targatExchange, targatScale} = this.state;
+      const API_HOST = process.env.REACT_APP_HOST;
 
-      fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${base}`)
+      fetch(API_HOST+'latest?from='+base)
       .then(checkStatus)
       .then(json)
       .then(data => {
-        console.log(data);
         const targetValue = startValue * data.rates[target]; //update the exchanged value
 
         const obj = this.convertObject(scale, data.rates[target]);
@@ -58,15 +61,13 @@ class CurrencyConverter extends React.Component {
             rate: data.rates[target],
             targetValue: targetValue.toFixed(3),
             targatScale: targatScales,
-            targatExchange}, () =>
-              console.log(this.state.rate)
-            );
+            targatExchange
+          });
         }
       })
       .catch(error => {
         console.log(error);
       })
-
 
     }
 
@@ -75,14 +76,14 @@ class CurrencyConverter extends React.Component {
       const today = new Date();
       const trimToday = today.toISOString().split('T')[0];
       const endDay = new Date(today.setDate(today.getDate() - date)).toISOString().split('T')[0];
+      const API_HOST = process.env.REACT_APP_HOST;
 
-      fetch(`https://altexchangerateapi.herokuapp.com/${endDay}..${trimToday}?from=${base}&to=${target}`)
+      fetch(API_HOST+`${endDay}..${trimToday}?from=${base}&to=${target}`)
       .then(checkStatus)
       .then(json)
-      .then(data2 => {
-        console.log(data2);
-        const historyRange = Object.keys(data2.rates);
-        const historyRate = Object.values(data2.rates).map(x => x[target]);
+      .then(data => {
+        const historyRange = Object.keys(data.rates);
+        const historyRate = Object.values(data.rates).map(x => x[target]);
         this.buildChart(historyRange, historyRate);
       })
       .catch(error => {
@@ -225,7 +226,6 @@ class CurrencyConverter extends React.Component {
       .then(data => {
         const targetValue = startValue * data.rates[target];
         const obj = this.convertObject(scale, data.rates[target]);
-        console.log(obj);
         //convert obj into array of object for easy rendering of result for left result table
         let targatScales = this.convertObjToArrObj(obj, targatScale, e, target);
         //first collect the needed rate from data.rates, then convert to each entry as pair of array by Object.Entries() method
@@ -300,7 +300,6 @@ class CurrencyConverter extends React.Component {
 
       this.getRateByAPI(base)
       .then(data => {
-        console.log(data);
         const targetValue = startValue * data.rates[target];
         const obj = this.convertObject(scale, rate);
         let targatScales = this.convertObjToArrObj(obj, targatScale, base, target);
@@ -338,7 +337,8 @@ class CurrencyConverter extends React.Component {
 
     //fetch exchange rate data by alt ex rate api
     getRateByAPI(value){
-      return fetch(`https://altexchangerateapi.herokuapp.com/latest?from=${value}`)
+      const API_HOST = process.env.REACT_APP_HOST;
+      return fetch(API_HOST+'latest?from='+value)
       .then(checkStatus)
       .then(json)
     }
@@ -370,15 +370,10 @@ class CurrencyConverter extends React.Component {
         base,
         target,
         sign
-      }, () => {
-        console.log(this.state.base);
-        console.log(this.state.target);
-        console.log(this.state.sign);
       });//ensure setState update this.state
 
       this.getRateByAPI(base)
       .then(data => {
-        console.log(data);
         const targetValue = startValue * data.rates[target];
 
         const obj = this.convertObject(scale, data.rates[target]);

@@ -8,7 +8,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-library.add(faVectorSquare, fab)
+require('dotenv').config();
+library.add(faVectorSquare, fab);
 
 ReactDOM.render(
   <React.StrictMode>
